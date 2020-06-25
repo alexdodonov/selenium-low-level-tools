@@ -1,6 +1,6 @@
 {
 	"name" : "enterprize/selenium-low-level-tools",
-	"description" : "https://gitlab.com/aeon.su/selenium-low-level-tools",
+	"description" : "https://github.com/aeon-su/selenium-low-level-tools",
 	"license" : "Commercial",
 	"authors" : [{
 			"name" : "Dodonov Alexey",
@@ -15,11 +15,11 @@
 	},
 	"support" : {
 		"email" : "alexey@dodonov.pro",
-		"issues" : "https://gitlab.com/aeon.su/selenium-low-level-tools/issues",
-		"source" : "https://gitlab.com/aeon.su/selenium-low-level-tools"
+		"issues" : "https://github.com/aeon-su/selenium-low-level-tools/issues",
+		"source" : "https://github.com/aeon-su/selenium-low-level-tools"
 	},
 	"minimum-stability" : "dev",
-	"homepage" : "https://gitlab.com/aeon.su/selenium-low-level-tools",
+	"homepage" : "https://github.com/aeon-su/selenium-low-level-tools",
 	"prefer-stable" : true,
 	"autoload" : {
 		"psr-4": {
