@@ -12,47 +12,47 @@ class LowLevelTools extends \PHPUnit\Framework\TestCase
     /**
      * Selenium driver
      */
-    var $Driver = false;
+    var $driver = false;
 
     /**
      * Setting up test vars
      */
     public function setUp(): void
     {
-        $Host = 'http://localhost:4444/wd/hub';
+        $host = 'http://localhost:4444/wd/hub';
 
-        $Options = new \Facebook\WebDriver\Chrome\ChromeOptions();
+        $options = new \Facebook\WebDriver\Chrome\ChromeOptions();
 
         global $argv;
 
         if (in_array('iphonex', $argv)) {
-            $Options->addArguments([
+            $options->addArguments([
                 '--window-size=375,812'
             ]);
         } elseif (in_array('ipad', $argv)) {
-            $Options->addArguments([
+            $options->addArguments([
                 '--window-size=768,1024'
             ]);
         } else {
-            $Options->addArguments([
+            $options->addArguments([
                 '--window-size=1400,800'
             ]);
         }
 
         if (in_array('headless', $argv)) {
-            $Options->addArguments([
+            $options->addArguments([
                 '--headless'
             ]);
         }
 
-        $Options->addArguments(
+        $options->addArguments(
             [
                 '--user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0'
             ]);
 
         $capabilities = \Facebook\WebDriver\Remote\DesiredCapabilities::chrome();
-        $capabilities->setCapability(\Facebook\WebDriver\Chrome\ChromeOptions::CAPABILITY, $Options);
-        $this->Driver = \Facebook\WebDriver\Remote\RemoteWebDriver::create($Host, $capabilities, 5000);
+        $capabilities->setCapability(\Facebook\WebDriver\Chrome\ChromeOptions::CAPABILITY, $options);
+        $this->driver = \Facebook\WebDriver\Remote\RemoteWebDriver::create($host, $capabilities, 5000);
     }
 
     /**
@@ -60,11 +60,11 @@ class LowLevelTools extends \PHPUnit\Framework\TestCase
      */
     public function tearDown(): void
     {
-        $Handles = $this->Driver->getWindowHandles();
+        $handles = $this->driver->getWindowHandles();
 
-        foreach ($Handles as $Handle) {
-            $this->Driver->switchTo()->window($Handle);
-            $this->Driver->close();
+        foreach ($handles as $handle) {
+            $this->driver->switchTo()->window($handle);
+            $this->driver->close();
         }
     }
 
@@ -79,9 +79,9 @@ class LowLevelTools extends \PHPUnit\Framework\TestCase
     protected function waitForVisibilityBySelector(string $selector, string $ErrorMessage = ''): void
     {
         try {
-            $Element = \Facebook\WebDriver\WebDriverBy::cssSelector($selector);
-            $condition = \Facebook\WebDriver\WebDriverExpectedCondition::visibilityOfElementLocated($Element);
-            $this->Driver->wait()->until($condition);
+            $element = \Facebook\WebDriver\WebDriverBy::cssSelector($selector);
+            $condition = \Facebook\WebDriver\WebDriverExpectedCondition::visibilityOfElementLocated($element);
+            $this->driver->wait()->until($condition);
 
             $this->addToAssertionCount(1);
         } catch (\Facebook\WebDriver\Exception\NoSuchElementException $e) {
@@ -100,9 +100,9 @@ class LowLevelTools extends \PHPUnit\Framework\TestCase
     protected function wait_for_invisibility_by_selector(string $selector, string $ErrorMessage = ''): void
     {
         try {
-            $Element = \Facebook\WebDriver\WebDriverBy::cssSelector($selector);
-            $condition = \Facebook\WebDriver\WebDriverExpectedCondition::invisibilityOfElementLocated($Element);
-            $this->Driver->wait()->until($condition);
+            $element = \Facebook\WebDriver\WebDriverBy::cssSelector($selector);
+            $condition = \Facebook\WebDriver\WebDriverExpectedCondition::invisibilityOfElementLocated($element);
+            $this->driver->wait()->until($condition);
 
             $this->addToAssertionCount(1);
         } catch (\Facebook\WebDriver\Exception\NoSuchElementException $e) {
@@ -120,8 +120,8 @@ class LowLevelTools extends \PHPUnit\Framework\TestCase
     {
         $this->waitForVisibilityBySelector($selector, 'Element was not shown');
 
-        $Element = $this->Driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector($selector));
-        $Element->click();
+        $element = $this->driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector($selector));
+        $element->click();
     }
 
     /**
@@ -133,7 +133,7 @@ class LowLevelTools extends \PHPUnit\Framework\TestCase
     {
         global $argv;
 
-        return (in_array('iphonex', $argv));
+        return in_array('iphonex', $argv);
     }
 
     /**
@@ -145,7 +145,7 @@ class LowLevelTools extends \PHPUnit\Framework\TestCase
     {
         global $argv;
 
-        return (in_array('ipad', $argv));
+        return in_array('ipad', $argv);
     }
 
     /**
@@ -155,7 +155,7 @@ class LowLevelTools extends \PHPUnit\Framework\TestCase
      */
     protected function desktop(): bool
     {
-        return ($this->phone() === false && $this->tablet() === false);
+        return $this->phone() === false && $this->tablet() === false;
     }
 
     /**
@@ -168,10 +168,10 @@ class LowLevelTools extends \PHPUnit\Framework\TestCase
      */
     protected function input_in(string $selector, string $Value): void
     {
-        $Element = $this->Driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector($selector));
+        $element = $this->driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector($selector));
 
-        $Element->click();
-        $Element->sendKeys($Value);
+        $element->click();
+        $element->sendKeys($Value);
     }
 
     /**
@@ -181,15 +181,15 @@ class LowLevelTools extends \PHPUnit\Framework\TestCase
      */
     protected function wait_for_page_reload(callable $Reloader): void
     {
-        $id = $this->Driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector('html'))->getID();
+        $id = $this->driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector('html'))->getID();
 
         call_user_func($Reloader);
 
-        $this->Driver->wait()->until(
+        $this->driver->wait()->until(
             function () use ($id) {
-                if ($id != $this->Driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector('html'))
+                if ($id != $this->driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector('html'))
                     ->getID()) {
-                    return (true);
+                    return true;
                 }
             });
     }
@@ -202,7 +202,7 @@ class LowLevelTools extends \PHPUnit\Framework\TestCase
      */
     protected function clear_input(string $selector): void
     {
-        $Input = $this->Driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector($selector));
+        $Input = $this->driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector($selector));
         $Input->clear();
     }
 
@@ -226,8 +226,8 @@ class LowLevelTools extends \PHPUnit\Framework\TestCase
      */
     protected function scrollToElement(string $selector): void
     {
-        $element = $this->Driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector($selector));
-        $action = new \Facebook\WebDriver\Interactions\WebDriverActions($this->Driver);
+        $element = $this->driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector($selector));
+        $action = new \Facebook\WebDriver\Interactions\WebDriverActions($this->driver);
         $action->moveToElement($element);
         $action->perform();
     }
@@ -253,7 +253,7 @@ class LowLevelTools extends \PHPUnit\Framework\TestCase
      */
     protected function isVisible(string $selector): bool
     {
-        $element = $this->Driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector($selector));
+        $element = $this->driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector($selector));
 
         return $element->isDisplayed();
     }
@@ -268,11 +268,11 @@ class LowLevelTools extends \PHPUnit\Framework\TestCase
     protected function elementExists(string $selector): bool
     {
         try {
-            $this->Driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector($selector));
+            $this->driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector($selector));
 
-            return (true);
+            return true;
         } catch (\Facebook\WebDriver\Exception\NoSuchElementException $e) {
-            return (false);
+            return false;
         }
     }
 }
