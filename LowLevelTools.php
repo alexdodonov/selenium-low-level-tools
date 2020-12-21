@@ -51,7 +51,7 @@ class LowLevelTools extends BaseTools
 
         $capabilities = DesiredCapabilities::chrome();
         $capabilities->setCapability(ChromeOptions::CAPABILITY, $options);
-        $this->driver = RemoteWebDriver::create($host, $capabilities, 5000);
+        self::$driver = RemoteWebDriver::create($host, $capabilities, 5000);
     }
 
     /**
@@ -59,11 +59,11 @@ class LowLevelTools extends BaseTools
      */
     public function tearDown(): void
     {
-        $handles = $this->driver->getWindowHandles();
+        $handles = self::$driver->getWindowHandles();
 
         foreach ($handles as $handle) {
-            $this->driver->switchTo()->window($handle);
-            $this->driver->close();
+            self::$driver->switchTo()->window($handle);
+            self::$driver->close();
         }
     }
 }

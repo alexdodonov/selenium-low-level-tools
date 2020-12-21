@@ -5,6 +5,7 @@ use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use PHPUnit\Framework\TestCase;
+use Facebook\WebDriver\WebDriverBy;
 
 /**
  * Selenium low level utilities wich are using only selenium bindings
@@ -19,7 +20,7 @@ class BaseTools extends TestCase
      * 
      * @var RemoteWebDriver
      */
-    var $driver = null;
+    static $driver = null;
 
     /**
      * Method waits when element with class $className become visible
@@ -32,9 +33,9 @@ class BaseTools extends TestCase
     protected function waitForVisibilityBySelector(string $selector, string $errorMessage = ''): void
     {
         try {
-            $element = \Facebook\WebDriver\WebDriverBy::cssSelector($selector);
+            $element = WebDriverBy::cssSelector($selector);
             $condition = \Facebook\WebDriver\WebDriverExpectedCondition::visibilityOfElementLocated($element);
-            $this->driver->wait()->until($condition);
+            self::$driver->wait()->until($condition);
 
             $this->addToAssertionCount(1);
         } catch (\Facebook\WebDriver\Exception\NoSuchElementException $e) {
@@ -53,9 +54,9 @@ class BaseTools extends TestCase
     protected function waitForInvisibilityBySelector(string $selector, string $errorMessage = ''): void
     {
         try {
-            $element = \Facebook\WebDriver\WebDriverBy::cssSelector($selector);
+            $element = WebDriverBy::cssSelector($selector);
             $condition = \Facebook\WebDriver\WebDriverExpectedCondition::invisibilityOfElementLocated($element);
-            $this->driver->wait()->until($condition);
+            self::$driver->wait()->until($condition);
 
             $this->addToAssertionCount(1);
         } catch (\Facebook\WebDriver\Exception\NoSuchElementException $e) {
@@ -73,7 +74,7 @@ class BaseTools extends TestCase
     {
         $this->waitForVisibilityBySelector($selector, 'Element was not shown');
 
-        $element = $this->driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector($selector));
+        $element = self::$driver->findElement(WebDriverBy::cssSelector($selector));
         $element->click();
     }
 
@@ -116,35 +117,53 @@ class BaseTools extends TestCase
      *
      * @param string $selector
      *            Element's selector
-     * @param string $Value
+     * @param string $value
      *            Value to be inputed
      */
-    protected function inputIn(string $selector, string $Value): void
+    protected function inputIn(string $selector, string $value): void
     {
-        $element = $this->driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector($selector));
+        $element = self::$driver->findElement(WebDriverBy::cssSelector($selector));
 
         $element->click();
-        $element->sendKeys($Value);
+        $element->sendKeys($value);
     }
 
     /**
      * Waiting for page will be reloaded
      *
-     * @param callable $Reloader
+     * @param callable $reloader
      */
-    protected function waitForPageReload(callable $Reloader): void
+    protected function waitForPageReload(callable $reloader): void
     {
-        $id = $this->driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector('html'))->getID();
+        $id = self::$driver->findElement(WebDriverBy::cssSelector('html'))->getID();
 
-        call_user_func($Reloader);
+        call_user_func($reloader);
 
-        $this->driver->wait()->until(
+        self::$driver->wait()->until(
             function () use ($id) {
-                if ($id != $this->driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector('html'))
+                if ($id != self::$driver->findElement(WebDriverBy::cssSelector('html'))
                     ->getID()) {
                     return true;
                 }
             });
+    }
+    
+    /**
+     * Waiting for page load
+     *
+     * @param string $url
+     *            page url
+     */
+    protected function waitForPageLoad(string $url): void
+    {
+        self::$driver->get($url);
+        
+        self::$driver->wait(10, 1000)->until(
+            function () {
+                $elements = self::$driver->findElements(WebDriverBy::cssSelector('html'));
+                return ! empty($elements);
+            },
+            'Error element');
     }
 
     /**
@@ -155,7 +174,7 @@ class BaseTools extends TestCase
      */
     protected function clearInput(string $selector): void
     {
-        $Input = $this->driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector($selector));
+        $Input = self::$driver->findElement(WebDriverBy::cssSelector($selector));
         $Input->clear();
     }
 
@@ -179,8 +198,8 @@ class BaseTools extends TestCase
      */
     protected function scrollToElement(string $selector): void
     {
-        $element = $this->driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector($selector));
-        $action = new \Facebook\WebDriver\Interactions\WebDriverActions($this->driver);
+        $element = self::$driver->findElement(WebDriverBy::cssSelector($selector));
+        $action = new \Facebook\WebDriver\Interactions\WebDriverActions(self::$driver);
         $action->moveToElement($element);
         $action->perform();
     }
@@ -206,7 +225,7 @@ class BaseTools extends TestCase
      */
     protected function isVisible(string $selector): bool
     {
-        $element = $this->driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector($selector));
+        $element = self::$driver->findElement(WebDriverBy::cssSelector($selector));
 
         return $element->isDisplayed();
     }
@@ -221,7 +240,7 @@ class BaseTools extends TestCase
     protected function elementExists(string $selector): bool
     {
         try {
-            $this->driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector($selector));
+            self::$driver->findElement(WebDriverBy::cssSelector($selector));
 
             return true;
         } catch (\Facebook\WebDriver\Exception\NoSuchElementException $e) {

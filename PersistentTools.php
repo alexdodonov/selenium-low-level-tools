@@ -18,7 +18,7 @@ class PersistentTools extends BaseTools
      */
     public function setUp(): void
     {
-        if ($this->driver !== null) {
+        if (self::$driver !== null) {
             return;
         }
 
@@ -55,7 +55,7 @@ class PersistentTools extends BaseTools
 
         $capabilities = DesiredCapabilities::chrome();
         $capabilities->setCapability(ChromeOptions::CAPABILITY, $options);
-        $this->driver = RemoteWebDriver::create($host, $capabilities, 5000);
+        self::$driver = RemoteWebDriver::create($host, $capabilities, 5000);
     }
 
     /**
