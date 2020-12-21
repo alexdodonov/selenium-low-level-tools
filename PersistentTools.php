@@ -10,7 +10,7 @@ use Facebook\WebDriver\Remote\DesiredCapabilities;
  *
  * @author Dodonov A.A.
  */
-class LowLevelTools extends BaseTools
+class PersistentTools extends BaseTools
 {
 
     /**
