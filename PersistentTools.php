@@ -18,6 +18,10 @@ class LowLevelTools extends BaseTools
      */
     public function setUp(): void
     {
+        if ($this->driver !== null) {
+            return;
+        }
+
         $host = 'http://localhost:4444/wd/hub';
 
         $options = new ChromeOptions();
@@ -59,11 +63,6 @@ class LowLevelTools extends BaseTools
      */
     public function tearDown(): void
     {
-        $handles = $this->driver->getWindowHandles();
-
-        foreach ($handles as $handle) {
-            $this->driver->switchTo()->window($handle);
-            $this->driver->close();
-        }
+        // do nothing
     }
 }
