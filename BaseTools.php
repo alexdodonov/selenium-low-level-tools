@@ -50,7 +50,7 @@ class BaseTools extends TestCase
      * @param string $errorMessage
      *            Error message
      */
-    protected function wait_for_invisibility_by_selector(string $selector, string $errorMessage = ''): void
+    protected function waitForInvisibilityBySelector(string $selector, string $errorMessage = ''): void
     {
         try {
             $element = \Facebook\WebDriver\WebDriverBy::cssSelector($selector);
@@ -119,7 +119,7 @@ class BaseTools extends TestCase
      * @param string $Value
      *            Value to be inputed
      */
-    protected function input_in(string $selector, string $Value): void
+    protected function inputIn(string $selector, string $Value): void
     {
         $element = $this->driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector($selector));
 
@@ -132,7 +132,7 @@ class BaseTools extends TestCase
      *
      * @param callable $Reloader
      */
-    protected function wait_for_page_reload(callable $Reloader): void
+    protected function waitForPageReload(callable $Reloader): void
     {
         $id = $this->driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector('html'))->getID();
 
@@ -153,7 +153,7 @@ class BaseTools extends TestCase
      * @param string $selector
      *            Selector of the input field
      */
-    protected function clear_input(string $selector): void
+    protected function clearInput(string $selector): void
     {
         $Input = $this->driver->findElement(\Facebook\WebDriver\WebDriverBy::cssSelector($selector));
         $Input->clear();
