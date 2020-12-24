@@ -1,6 +1,6 @@
 {
-	"name" : "enterprize/selenium-low-level-tools",
-	"description" : "https://github.com/aeon-su/selenium-low-level-tools",
+	"name" : "mezon/selenium-low-level-tools",
+	"description" : "https://github.com/alexdodonov/selenium-low-level-tools",
 	"license" : "Commercial",
 	"authors" : [{
 			"name" : "Dodonov Alexey",
@@ -18,15 +18,15 @@
 	},
 	"support" : {
 		"email" : "alexey@dodonov.pro",
-		"issues" : "https://github.com/aeon-su/selenium-low-level-tools/issues",
-		"source" : "https://github.com/aeon-su/selenium-low-level-tools"
+		"issues" : "https://github.com/alexdodonov/selenium-low-level-tools/issues",
+		"source" : "https://github.com/alexdodonov/selenium-low-level-tools"
 	},
 	"minimum-stability" : "dev",
-	"homepage" : "https://github.com/aeon-su/selenium-low-level-tools",
+	"homepage" : "https://github.com/alexdodonov/selenium-low-level-tools",
 	"prefer-stable" : true,
 	"autoload" : {
 		"psr-4": {
-			"Enterprize\\Selenium\\": ""
+			"mezon\\Selenium\\": ""
 		}
 	}
 }
