@@ -1,5 +1,5 @@
 <?php
-namespace Enterprize\Selenium;
+namespace Mezon\Selenium;
 
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Chrome\ChromeOptions;
