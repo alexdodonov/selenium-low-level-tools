@@ -6,6 +6,9 @@ use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use PHPUnit\Framework\TestCase;
 use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\Exception\NoSuchElementException;
+use Facebook\WebDriver\Interactions\WebDriverActions;
+use Facebook\WebDriver\WebDriverExpectedCondition;
 
 /**
  * Selenium low level utilities wich are using only selenium bindings
@@ -34,11 +37,11 @@ class BaseTools extends TestCase
     {
         try {
             $element = WebDriverBy::cssSelector($selector);
-            $condition = \Facebook\WebDriver\WebDriverExpectedCondition::visibilityOfElementLocated($element);
+            $condition = WebDriverExpectedCondition::visibilityOfElementLocated($element);
             self::$driver->wait()->until($condition);
 
             $this->addToAssertionCount(1);
-        } catch (\Facebook\WebDriver\Exception\NoSuchElementException $e) {
+        } catch (NoSuchElementException $e) {
             $this->fail($errorMessage);
         }
     }
@@ -55,11 +58,11 @@ class BaseTools extends TestCase
     {
         try {
             $element = WebDriverBy::cssSelector($selector);
-            $condition = \Facebook\WebDriver\WebDriverExpectedCondition::invisibilityOfElementLocated($element);
+            $condition = WebDriverExpectedCondition::invisibilityOfElementLocated($element);
             self::$driver->wait()->until($condition);
 
             $this->addToAssertionCount(1);
-        } catch (\Facebook\WebDriver\Exception\NoSuchElementException $e) {
+        } catch (NoSuchElementException $e) {
             $this->fail($errorMessage);
         }
     }
@@ -199,7 +202,7 @@ class BaseTools extends TestCase
     protected function scrollToElement(string $selector): void
     {
         $element = self::$driver->findElement(WebDriverBy::cssSelector($selector));
-        $action = new \Facebook\WebDriver\Interactions\WebDriverActions(self::$driver);
+        $action = new WebDriverActions(self::$driver);
         $action->moveToElement($element);
         $action->perform();
     }
@@ -243,8 +246,23 @@ class BaseTools extends TestCase
             self::$driver->findElement(WebDriverBy::cssSelector($selector));
 
             return true;
-        } catch (\Facebook\WebDriver\Exception\NoSuchElementException $e) {
+        } catch (NoSuchElementException $e) {
             return false;
         }
+    }
+
+    /**
+     * Method validates tag content
+     *
+     * @param string $selector
+     *            tag selector
+     * @param string $expectedValue
+     *            expected value
+     */
+    protected function checkTagContent(string $selector, string $expectedValue): void
+    {
+        $element = WebDriverBy::cssSelector($selector);
+        $element = self::$driver->findElement($element);
+        $this->assertEquals($expectedValue, $element->getText());
     }
 }
