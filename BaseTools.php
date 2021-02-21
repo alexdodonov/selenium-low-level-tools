@@ -250,6 +250,20 @@ class BaseTools extends TestCase
             return false;
         }
     }
+    
+    /**
+     * Method fetches tag's text
+     *
+     * @param string $selector
+     *            tag's selector
+     * @return string tag's text
+     */
+    protected function getTagContent(string $selector): string
+    {
+        $element = WebDriverBy::cssSelector($selector);
+        $element = self::$driver->findElement($element);
+        return $element->getText();
+    }
 
     /**
      * Method validates tag content
@@ -261,8 +275,6 @@ class BaseTools extends TestCase
      */
     protected function checkTagContent(string $selector, string $expectedValue): void
     {
-        $element = WebDriverBy::cssSelector($selector);
-        $element = self::$driver->findElement($element);
-        $this->assertEquals($expectedValue, $element->getText());
+        $this->assertEquals($expectedValue, $this->getTagContent($selector));
     }
 }
