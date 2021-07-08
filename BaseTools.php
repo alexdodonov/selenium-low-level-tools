@@ -17,6 +17,13 @@ use Facebook\WebDriver\WebDriverExpectedCondition;
  */
 class BaseTools extends TestCase
 {
+    
+    /**
+     * Directory for downloads
+     *
+     * @var string
+     */
+    public $downloadsDirectory = 'c:\\tmp\\selenium\\';
 
     /**
      * Selenium driver

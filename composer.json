@@ -21,9 +21,7 @@
 		"issues" : "https://github.com/alexdodonov/selenium-low-level-tools/issues",
 		"source" : "https://github.com/alexdodonov/selenium-low-level-tools"
 	},
-	"minimum-stability" : "dev",
 	"homepage" : "https://github.com/alexdodonov/selenium-low-level-tools",
-	"prefer-stable" : true,
 	"autoload" : {
 		"psr-4": {
 			"Mezon\\Selenium\\": ""

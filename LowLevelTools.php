@@ -44,10 +44,14 @@ class LowLevelTools extends BaseTools
             ]);
         }
 
-        $options->addArguments(
-            [
-                '--user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0'
-            ]);
+        $options->addArguments([
+            '--user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0'
+        ]);
+
+        $prefs = [
+            'download.default_directory' => $this->downloadsDirectory
+        ];
+        $options->setExperimentalOption('prefs', $prefs);
 
         $capabilities = DesiredCapabilities::chrome();
         $capabilities->setCapability(ChromeOptions::CAPABILITY, $options);
