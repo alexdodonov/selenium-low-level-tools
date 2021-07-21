@@ -9,8 +9,9 @@ use Facebook\WebDriver\Remote\DesiredCapabilities;
  * Selenium low level utilities wich are using only selenium bindings
  *
  * @author Dodonov A.A.
+ * @psalm-suppress PropertyNotSetInConstructor
  */
-class LowLevelTools extends BaseTools
+class PersistentTools extends BaseTools
 {
 
     /**
@@ -18,6 +19,10 @@ class LowLevelTools extends BaseTools
      */
     public function setUp(): void
     {
+        if (self::$driver !== null) {
+            return;
+        }
+
         $host = 'http://localhost:4444/wd/hub';
 
         $options = new ChromeOptions();
@@ -63,11 +68,17 @@ class LowLevelTools extends BaseTools
      */
     public function tearDown(): void
     {
-        $handles = self::$driver->getWindowHandles();
+        // do nothing
+    }
 
-        foreach ($handles as $handle) {
-            self::$driver->switchTo()->window($handle);
-            self::$driver->close();
+    /**
+     * Destroing driver at the end of the tests
+     */
+    public function __destruct()
+    {
+        if (self::$driver !== null) {
+            self::$driver->quit();
+            self::$driver = null;
         }
     }
 }

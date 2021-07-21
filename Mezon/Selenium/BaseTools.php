@@ -14,10 +14,11 @@ use Facebook\WebDriver\WebDriverExpectedCondition;
  * Selenium low level utilities wich are using only selenium bindings
  *
  * @author Dodonov A.A.
+ * @psalm-suppress PropertyNotSetInConstructor
  */
 class BaseTools extends TestCase
 {
-    
+
     /**
      * Directory for downloads
      *
@@ -27,10 +28,24 @@ class BaseTools extends TestCase
 
     /**
      * Selenium driver
-     * 
-     * @var RemoteWebDriver
+     *
+     * @var ?RemoteWebDriver
      */
     static $driver = null;
+
+    /**
+     * Method fetches web driver object
+     *
+     * @return RemoteWebDriver web driver object
+     */
+    protected static function getDriver(): RemoteWebDriver
+    {
+        if (self::$driver === null) {
+            throw (new \Exception('WebDirever was not setup', - 1));
+        }
+
+        return self::$driver;
+    }
 
     /**
      * Method waits when element with class $className become visible
@@ -45,9 +60,9 @@ class BaseTools extends TestCase
         try {
             $element = WebDriverBy::cssSelector($selector);
             $condition = WebDriverExpectedCondition::visibilityOfElementLocated($element);
-            self::$driver->wait()->until($condition);
+            self::getDriver()->wait()->until($condition);
 
-            $this->addToAssertionCount(1);
+            $this->assertTrue(true);
         } catch (NoSuchElementException $e) {
             $this->fail($errorMessage);
         }
@@ -66,9 +81,9 @@ class BaseTools extends TestCase
         try {
             $element = WebDriverBy::cssSelector($selector);
             $condition = WebDriverExpectedCondition::invisibilityOfElementLocated($element);
-            self::$driver->wait()->until($condition);
+            self::getDriver()->wait()->until($condition);
 
-            $this->addToAssertionCount(1);
+            $this->assertTrue(true);
         } catch (NoSuchElementException $e) {
             $this->fail($errorMessage);
         }
@@ -84,7 +99,7 @@ class BaseTools extends TestCase
     {
         $this->waitForVisibilityBySelector($selector, 'Element was not shown');
 
-        $element = self::$driver->findElement(WebDriverBy::cssSelector($selector));
+        $element = self::getDriver()->findElement(WebDriverBy::cssSelector($selector));
         $element->click();
     }
 
@@ -132,7 +147,7 @@ class BaseTools extends TestCase
      */
     protected function inputIn(string $selector, string $value): void
     {
-        $element = self::$driver->findElement(WebDriverBy::cssSelector($selector));
+        $element = self::getDriver()->findElement(WebDriverBy::cssSelector($selector));
 
         $element->click();
         $element->sendKeys($value);
@@ -145,19 +160,19 @@ class BaseTools extends TestCase
      */
     protected function waitForPageReload(callable $reloader): void
     {
-        $id = self::$driver->findElement(WebDriverBy::cssSelector('html'))->getID();
+        $id = self::getDriver()->findElement(WebDriverBy::cssSelector('html'))->getID();
 
         call_user_func($reloader);
 
-        self::$driver->wait()->until(
+        self::getDriver()->wait()->until(
             function () use ($id) {
-                if ($id != self::$driver->findElement(WebDriverBy::cssSelector('html'))
+                if ($id != self::getDriver()->findElement(WebDriverBy::cssSelector('html'))
                     ->getID()) {
                     return true;
                 }
             });
     }
-    
+
     /**
      * Waiting for page load
      *
@@ -166,11 +181,11 @@ class BaseTools extends TestCase
      */
     protected function waitForPageLoad(string $url): void
     {
-        self::$driver->get($url);
-        
-        self::$driver->wait(10, 1000)->until(
+        self::getDriver()->get($url);
+
+        self::getDriver()->wait(10, 1000)->until(
             function () {
-                $elements = self::$driver->findElements(WebDriverBy::cssSelector('html'));
+                $elements = self::getDriver()->findElements(WebDriverBy::cssSelector('html'));
                 return ! empty($elements);
             },
             'Error element');
@@ -184,7 +199,7 @@ class BaseTools extends TestCase
      */
     protected function clearInput(string $selector): void
     {
-        $Input = self::$driver->findElement(WebDriverBy::cssSelector($selector));
+        $Input = self::getDriver()->findElement(WebDriverBy::cssSelector($selector));
         $Input->clear();
     }
 
@@ -208,8 +223,8 @@ class BaseTools extends TestCase
      */
     protected function scrollToElement(string $selector): void
     {
-        $element = self::$driver->findElement(WebDriverBy::cssSelector($selector));
-        $action = new WebDriverActions(self::$driver);
+        $element = self::getDriver()->findElement(WebDriverBy::cssSelector($selector));
+        $action = new WebDriverActions(self::getDriver());
         $action->moveToElement($element);
         $action->perform();
     }
@@ -235,7 +250,7 @@ class BaseTools extends TestCase
      */
     protected function isVisible(string $selector): bool
     {
-        $element = self::$driver->findElement(WebDriverBy::cssSelector($selector));
+        $element = self::getDriver()->findElement(WebDriverBy::cssSelector($selector));
 
         return $element->isDisplayed();
     }
@@ -250,14 +265,14 @@ class BaseTools extends TestCase
     protected function elementExists(string $selector): bool
     {
         try {
-            self::$driver->findElement(WebDriverBy::cssSelector($selector));
+            self::getDriver()->findElement(WebDriverBy::cssSelector($selector));
 
             return true;
         } catch (NoSuchElementException $e) {
             return false;
         }
     }
-    
+
     /**
      * Method fetches tag's text
      *
@@ -268,7 +283,7 @@ class BaseTools extends TestCase
     protected function getTagContent(string $selector): string
     {
         $element = WebDriverBy::cssSelector($selector);
-        $element = self::$driver->findElement($element);
+        $element = self::getDriver()->findElement($element);
         return $element->getText();
     }
 
