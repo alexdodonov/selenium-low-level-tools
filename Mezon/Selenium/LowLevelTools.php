@@ -64,11 +64,11 @@ class LowLevelTools extends BaseTools
      */
     public function tearDown(): void
     {
-        $handles = self::$driver->getWindowHandles();
+        $handles = self::getDriver()->getWindowHandles();
 
         foreach ($handles as $handle) {
-            self::$driver->switchTo()->window($handle);
-            self::$driver->close();
+            self::getDriver()->switchTo()->window($handle);
+            self::getDriver()->close();
         }
     }
 }

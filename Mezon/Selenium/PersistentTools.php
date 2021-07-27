@@ -77,7 +77,7 @@ class PersistentTools extends BaseTools
     public function __destruct()
     {
         if (self::$driver !== null) {
-            self::$driver->quit();
+            self::getDriver()->quit();
             self::$driver = null;
         }
     }
