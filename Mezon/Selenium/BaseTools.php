@@ -9,6 +9,7 @@ use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\Exception\NoSuchElementException;
 use Facebook\WebDriver\Interactions\WebDriverActions;
 use Facebook\WebDriver\WebDriverExpectedCondition;
+use Mezon\Pop3\Client;
 
 /**
  * Selenium low level utilities wich are using only selenium bindings
@@ -298,5 +299,46 @@ class BaseTools extends TestCase
     protected function checkTagContent(string $selector, string $expectedValue): void
     {
         $this->assertEquals($expectedValue, $this->getTagContent($selector));
+    }
+
+    /**
+     * Method clears all emails
+     */
+    protected function clearAllEmails(): void
+    {
+        $client = new Client($this->server, $this->login, $this->password, 10, 995);
+
+        $count = $client->getCount();
+        for ($i = 1; $i <= $count; $i ++) {
+            $client->deleteMessage($i);
+        }
+
+        $client->quit();
+    }
+
+    /**
+     * Method asserts that email with subject exists
+     *
+     * @param string $subject
+     *            required subject
+     * @param int $timeout
+     *            timeout in seconds
+     */
+    protected function assertEmailWithSubject(string $subject, int $timeout = 10): void
+    {
+        $client = new Client($this->server, $this->login, $this->password, $timeout, 995);
+
+        for ($t = 0; $t < $timeout; $t ++) {
+            for ($i = 1; $i <= $client->getCount(); $i ++) {
+                if ($client->getMessageSubject($i) === $subject) {
+                    $this->addToAssertionCount(1);
+                    return;
+                }
+            }
+
+            sleep(1);
+        }
+
+        $this->fail('Email with subject "' . $subject . '" was not found');
     }
 }
