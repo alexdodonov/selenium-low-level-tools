@@ -302,6 +302,27 @@ class BaseTools extends TestCase
     }
 
     /**
+     * Email server
+     *
+     * @var string
+     */
+    protected $server = '';
+
+    /**
+     * Email login
+     *
+     * @var string
+     */
+    protected $login = '';
+
+    /**
+     * Email password
+     *
+     * @var string
+     */
+    protected $password = '';
+
+    /**
      * Method clears all emails
      */
     protected function clearAllEmails(): void
