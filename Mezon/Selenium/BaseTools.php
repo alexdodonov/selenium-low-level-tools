@@ -352,7 +352,7 @@ class BaseTools extends TestCase
         for ($t = 0; $t < $timeout; $t ++) {
             for ($i = 1; $i <= $client->getCount(); $i ++) {
                 if ($client->getMessageSubject($i) === $subject) {
-                    $this->addToAssertionCount(1);
+                    $this->assertTrue(true);
                     return;
                 }
             }
