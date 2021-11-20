@@ -64,6 +64,7 @@ class LowLevelTools extends BaseTools
      */
     public function tearDown(): void
     {
+        /** @var string[] $handles */
         $handles = self::getDriver()->getWindowHandles();
 
         foreach ($handles as $handle) {
