@@ -2,14 +2,12 @@
 namespace Mezon\Selenium;
 
 use Facebook\WebDriver\Remote\RemoteWebDriver;
-use Facebook\WebDriver\Chrome\ChromeOptions;
-use Facebook\WebDriver\Remote\DesiredCapabilities;
 use PHPUnit\Framework\TestCase;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\Exception\NoSuchElementException;
 use Facebook\WebDriver\Interactions\WebDriverActions;
 use Facebook\WebDriver\WebDriverExpectedCondition;
-use Mezon\Pop3\Client;
+use Mezon\Utils\Fs;
 
 /**
  * Selenium low level utilities wich are using only selenium bindings
@@ -299,5 +297,39 @@ class BaseTools extends TestCase
     protected function checkTagContent(string $selector, string $expectedValue): void
     {
         $this->assertEquals($expectedValue, $this->getTagContent($selector));
+    }
+
+    /**
+     * Asserting that file was downloaded
+     *
+     * @param string $fileName
+     *            name of the downloaded file
+     */
+    public function assertFileWasDownloaded(string $fileName = ''): void
+    {
+        $counter = 0;
+
+        // cleanup forbidden symbols like Chrome does it
+        $fileName = str_replace([
+            '"'
+        ], [
+            '_'
+        ], $fileName);
+
+        // wait for file download
+        while ($counter ++ <= 10) {
+            if ($fileName === '') {
+                if (! Fs::isDirectoryEmpty($this->downloadsDirectory)) {
+                    $this->assertTrue(true);
+                    return;
+                }
+            } elseif (file_exists($this->downloadsDirectory . $fileName)) {
+                $this->assertTrue(true);
+                return;
+            }
+            sleep(1);
+        }
+
+        $this->fail('File ' . $fileName . ' was not downloaded');
     }
 }
