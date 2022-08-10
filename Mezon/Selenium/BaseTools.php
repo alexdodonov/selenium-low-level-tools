@@ -294,7 +294,7 @@ class BaseTools extends TestCase
      * @param string $expectedValue
      *            expected value
      *            
-     * @deprecated Since 2022-02-19, use Actions::assertTagContent
+     * @deprecated Since 2022-02-19, use Asserts::assertTagContent
      */
     protected function checkTagContent(string $selector, string $expectedValue): void
     {
