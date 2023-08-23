@@ -4,6 +4,7 @@ namespace Mezon\Selenium;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
+use Mezon\TestDataManager;
 
 /**
  * Selenium low level utilities wich are using only selenium bindings
@@ -19,6 +20,8 @@ class PersistentTools extends BaseTools
      */
     public function setUp(): void
     {
+        TestDataManager::setUpScripts();
+
         if (self::$driver !== null) {
             return;
         }
@@ -68,7 +71,9 @@ class PersistentTools extends BaseTools
      */
     public function tearDown(): void
     {
-        // do nothing
+        TestDataManager::tearDown();
+
+        TestDataManager::tearDownScripts();
     }
 
     /**
